@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import { Ireservation } from "@/types";
 import { Table } from "@/models";
+import { pickAllowedFields } from "@/helpers";
 
 export const create = async (
   req: Request<{}, {}, Ireservation>,
@@ -8,6 +9,8 @@ export const create = async (
   Model: any,
   allowedFields: (keyof Ireservation)[]
 ) => {
+  const validatedReq = pickAllowedFields<Ireservation>(req.body, allowedFields);
+
   const {
     restaurantId,
     tableId,
@@ -17,7 +20,14 @@ export const create = async (
     partySize,
     startTime,
     endTime,
-  } = req.body;
+  } = validatedReq;
+
+  if (partySize == null || startTime == null || endTime == null) {
+    return res.status(400).json({
+      success: false,
+      message: "partySize, startTime and endTime are required",
+    });
+  }
 
   const table = await Table.findOne({
     _id: tableId,
