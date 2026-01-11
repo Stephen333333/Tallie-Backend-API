@@ -16,9 +16,9 @@ export const update = async (
 ) => {
   const { id } = req.params;
 
-  const updateData = pickAllowedFields<Irestaurant>(req.body, allowedFields);
+  const validatedReq = pickAllowedFields<Irestaurant>(req.body, allowedFields);
 
-  const result = await Model.findByIdAndUpdate(id, updateData, {
+  const result = await Model.findByIdAndUpdate(id, validatedReq, {
     new: true,
     runValidators: true,
   });

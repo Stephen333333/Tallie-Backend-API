@@ -8,9 +8,9 @@ export const create = async (
   Model: any,
   allowedFields: (keyof Itable)[]
 ) => {
-  const fomatedData = pickAllowedFields<Itable>(req.body, allowedFields);
+  const validatedReq = pickAllowedFields<Itable>(req.body, allowedFields);
 
-  const result = await new Model(fomatedData).save();
+  const result = await new Model(validatedReq).save();
 
   return res.status(201).json({
     success: true,

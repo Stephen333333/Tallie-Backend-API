@@ -9,9 +9,9 @@ export const create = async (
   allowedFields: (keyof Irestaurant)[]
 ) => {
 
-  const fomatedData = pickAllowedFields<Irestaurant>(req.body, allowedFields);
+  const validatedReq = pickAllowedFields<Irestaurant>(req.body, allowedFields);
 
-  const result = await new Model(fomatedData).save();
+  const result = await new Model(validatedReq).save();
 
   return res.status(201).json({
     success: true,
