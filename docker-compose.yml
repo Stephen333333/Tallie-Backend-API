@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: tallie
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      target: runtime
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "8100:8100"
+    env_file:
+      - .env
+      - .env.local
+    environment:
+      # recommended defaults (override in .env)
+      NODE_ENV: production
+      PORT: 8100
+      # DATABASE should point to the mongo service defined here
+      # You can omit if you set it in .env
+      DATABASE: mongodb://mongo:27017/tallie
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('./build/server'); console.log('ok')"], # lightweight check; tailor if needed
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    # if you want logs appended to host
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mongo-data:
