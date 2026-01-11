@@ -31,7 +31,7 @@ export function decrypt(encryptedData: any) {
   return decrypted;
 }
 
-export const pickDefinedFields = <T extends object>(
+export const pickAllowedFields = <T extends object>(
   source: Partial<T>,
   allowedFields: readonly (keyof T)[]
 ): Partial<T> => {

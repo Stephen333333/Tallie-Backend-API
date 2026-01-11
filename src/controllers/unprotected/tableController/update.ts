@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { Itable } from "@/types";
-import { pickDefinedFields } from "@/helpers";
+import { pickAllowedFields } from "@/helpers";
 
 export const update = async (
   req: Request<
@@ -16,7 +16,7 @@ export const update = async (
 ) => {
   const { id } = req.params;
 
-  const updateData = pickDefinedFields<Itable>(req.body, allowedFields);
+  const updateData = pickAllowedFields<Itable>(req.body, allowedFields);
 
   const result = await Model.findByIdAndUpdate(id, updateData, {
     new: true,

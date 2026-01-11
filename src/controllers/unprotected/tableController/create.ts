@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { Itable } from "@/types/table";
-import { pickDefinedFields } from "@/helpers";
+import { pickAllowedFields } from "@/helpers";
 
 export const create = async (
   req: Request<{}, {}, Itable>,
@@ -8,7 +8,7 @@ export const create = async (
   Model: any,
   allowedFields: (keyof Itable)[]
 ) => {
-  const fomatedData = pickDefinedFields<Itable>(req.body, allowedFields);
+  const fomatedData = pickAllowedFields<Itable>(req.body, allowedFields);
 
   const result = await new Model(fomatedData).save();
 

@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { Irestaurant } from "@/types";
-import { pickDefinedFields } from "@/helpers";
+import { pickAllowedFields } from "@/helpers";
 
 export const create = async (
   req: Request<{}, {}, Irestaurant>,
@@ -9,7 +9,7 @@ export const create = async (
   allowedFields: (keyof Irestaurant)[]
 ) => {
 
-  const fomatedData = pickDefinedFields<Irestaurant>(req.body, allowedFields);
+  const fomatedData = pickAllowedFields<Irestaurant>(req.body, allowedFields);
 
   const result = await new Model(fomatedData).save();
 
