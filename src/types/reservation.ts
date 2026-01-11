@@ -9,7 +9,7 @@ export type Ireservation = {
   customerPhone: string;
   customerEmail: string;
   partySize: number;
-  status: 'pending' | 'confirmed' | 'seated' | 'completed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   startTime: Date;
   endTime: Date;
   createdAt: Date;

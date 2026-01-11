@@ -1,6 +1,9 @@
 import moduleAlias from "module-alias";
 import path from "path";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
+import { createApp } from "./app";
+
 
 dotenv.config({ path: ".env" });
 dotenv.config({ path: ".env.local" });
@@ -8,9 +11,6 @@ dotenv.config({ path: ".env.local" });
 moduleAlias.addAliases({
   "@": path.resolve(__dirname, "../src"),
 });
-
-import mongoose from "mongoose";
-import { createApp } from "./app";
 
 const databaseUrl = process.env.DATABASE!;
 

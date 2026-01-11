@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 
 export type Irestaurant = {
-  _id?: Types.ObjectId;
+  _id: Types.ObjectId;
   removed: boolean;
   name: string;
   address: string;
