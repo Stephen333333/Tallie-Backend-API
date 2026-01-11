@@ -1,4 +1,4 @@
-import { Restaurant } from './resturant'
+import { Restaurant } from '../coreModels/resturant'
 import { Reservation } from './reservations';
 import { Table } from './tables';
 
