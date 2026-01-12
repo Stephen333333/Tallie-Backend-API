@@ -28,13 +28,13 @@
 2. **Create a `.env` file** in the project root:
 
    ```env
-   DATABASE="mongodb://localhost:27017/tallie"
+   DATABASE="mongodb://localhost:27017/tallie"; a hosted database url is provided in the email
    PORT=8100
    ```
 
    | Variable   | Description                              |
    | ---------- | ---------------------------------------- |
-   | `DATABASE` | MongoDB connection string (**required**) |
+   | `DATABASE` | MongoDB connection string (**required**) you can use the hosted database provided in the email |
    | `PORT`     | Server port (**required**)               |
 
 3. **Start the development server**
