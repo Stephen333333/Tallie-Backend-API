@@ -1,0 +1,175 @@
+## Project
+
+**Tallie Backend API** — a small Express + TypeScript API that manages Restaurants, Tables and Reservations.
+
+## Quick Start
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- npm
+- you can run a mongodb database locally or use the hosted version i provided in the email
+
+### Install & Run (dev)
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Create a .env in project root with required env vars:
+   ```
+   DATABASE="mongodb://localhost:27017/tallie"
+   PORT=8100
+   ```
+   - `DATABASE` — MongoDB connection string (required)
+   - `PORT` — port the server listens on (required)
+3. Start in development (hot reload):
+   ```bash
+   npm run dev
+   ```
+   - This runs nodemon + ts-node for live reloading.
+
+### Helpful scripts
+
+- `npm run dev` — development server (nodemon + ts-node)
+- `npm run build` — compile TypeScript to `build/`
+- `npm run start:server` — run compiled server
+- `npm run tscTest` — TypeScript type-check only
+
+---
+
+## Server basics
+
+- Base API prefix: `/api/`
+- Health-check: `GET /health` → returns `200 OK` with body `OK`
+- Responses are JSON with the shape:
+  ```json
+  {
+    "success": true|false,
+    "result": null|{...}|[{...}],
+    "message": "..."
+  }
+  ```
+
+---
+
+## Routes & Payloads 
+
+All routes are under `/api/*`.
+
+Note: request/response codes used:
+
+- `201` — Created
+- `200` — OK (read/update/delete success)
+- `400` — Validation / bad request
+- `404` — Not found
+- `409` — Conflict (e.g., overlapping reservation)
+
+### Restaurant
+
+- POST /api/restaurant/create
+  - Body (JSON):
+    ```json
+    {
+      "name": "Stephen's Test Restaurant",
+      "address": "123 Victoria Island, Lagos",
+      "phone": "555-1111",
+      "email": "info@StephensTest.com",
+      "website": "https://StephensTest.example",
+      "openingHours": {
+        "monday": {
+          "openingTime": 540, 
+          "closingTime": 1320,
+          "isClosed": false
+        },
+        "tuesday": {
+          "openingTime": 540,
+          "closingTime": 1320,
+          "isClosed": false
+        },
+        "sunday": { "isClosed": true }
+      }
+    }
+    ```
+    - `openingTime` / `closingTime` are minutes from midnight (0–1439).
+    - Days should be full weekday names lowercased (e.g., `monday`, `tuesday`).
+
+- GET /api/restaurant/read/:id
+- PATCH /api/restaurant/update/:id
+  - Body: any of the fields from create (partial allowed).
+- DELETE /api/restaurant/delete/:id
+  - Soft-deletes (`removed: true`).
+
+### Table
+
+- POST /api/table/create
+  - Body:
+    ```json
+    {
+      "restaurantId": "60f7a2cd9f1b2c001234abcd",
+      "tableNumber": 5,
+      "capacity": 4
+    }
+    ```
+  - `restaurantId` is a MongoDB ObjectId (string).
+- GET /api/table/read/:id
+- PATCH /api/table/update/:id
+  - Body: any of `restaurantId`, `tableNumber`, `capacity`
+- DELETE /api/table/delete/:id
+  - Soft-delete.
+
+### Reservation
+
+- POST /api/reservation/create
+  - Body:
+    ```json
+    {
+      "restaurantId": "60f7a2cd9f1b2c001234abcd",
+      "tableId": "60f7a3ef9a7b3c001234ef12",
+      "customerName": "Kemi",
+      "customerPhone": "555-2222",
+      "customerEmail": "Kemi@example.com",
+      "partySize": 3,
+      "startTime": "2026-01-20T18:00:00.000Z",
+      "endTime": "2026-01-20T19:30:00.000Z"
+    }
+    ```
+  - Validations / business rules:
+    - `startTime` and `endTime` must be valid dates; `startTime < endTime`.
+    - Reservation must not span multiple calendar days.
+    - The restaurant must have `openingHours` for the reservation day, and `startTime`/`endTime` must be within those opening/closing minutes.
+    - Table capacity must be >= `partySize`.
+    - Overlapping reservations for the same table/restaurant (status not cancelled/completed) result in `409 Conflict`.
+- GET /api/reservation/read/:id
+- PATCH /api/reservation/update/:id
+  - Body: any of the reservation fields (e.g., update times, partySize, status).
+  - Allowed `status` values: `pending`, `confirmed`, `completed`, `cancelled`.
+- DELETE /api/reservation/delete/:id
+  - Soft-delete.
+
+---
+
+## Example curl (create restaurant)
+
+```bash
+curl -X POST http://localhost:8100/api/restaurant/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name":"My Diner",
+    "address":"123 Main St",
+    "phone":"555-1111",
+    "email":"info@mydiner.com",
+    "website":"https://mydiner.example",
+    "openingHours": {
+      "monday": {"openingTime":540,"closingTime":1320,"isClosed":false}
+    }
+  }'
+```
+
+---
+
+## Notes & tips 💡
+
+- Ensure MongoDB is running and `DATABASE` points to it.
+- Timestamps and times are handled as JavaScript `Date` objects and ISO strings are accepted.
+- The API uses soft deletes: deleted resources set `removed: true`.
