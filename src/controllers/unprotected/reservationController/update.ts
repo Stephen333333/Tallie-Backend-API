@@ -151,7 +151,7 @@ export const update = async (
       endTime,
       status,
     },
-    { new: true }
+    { new: true, runValidators: true }
   );
 
   return res.status(200).json({
