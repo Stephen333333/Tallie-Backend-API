@@ -18,10 +18,20 @@ export const update = async (
 
   const validatedReq = pickAllowedFields<Irestaurant>(req.body, allowedFields);
 
-  const result = await Model.findByIdAndUpdate(id, validatedReq, {
-    new: true,
-    runValidators: true,
-  });
+  const result = await Model.findOneAndUpdate(
+    { id, removed: false },
+    validatedReq,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+  if (!result) {
+    return res.status(404).json({
+      success: false,
+      message: Model.modelName + " not found",
+    });
+  }
 
   return res.status(200).json({
     success: true,
