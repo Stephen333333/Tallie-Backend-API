@@ -1,6 +1,3 @@
-
----
-
 # 🍽️ Tallie Backend API
 
 **Tallie Backend API** is a small **Express + TypeScript** REST API for managing **Restaurants**, **Tables**, and **Reservations** with business-rule validation and soft deletes.
