@@ -34,8 +34,8 @@ const restaurantSchema = new Schema({
   openingHours: {
     type: Map,
     of: {
-      openingTime: { type: String, required: true },
-      closingTime: { type: String, required: true }
+      openingTime: { type: Number, required: true },
+      closingTime: { type: Number, required: true }
     }
   },
 }, { timestamps: true, }
