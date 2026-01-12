@@ -8,7 +8,6 @@ import { read } from './read';
 export const tableController = (() => {
   const allowedFields: (keyof Itable)[] = [
     "restaurantId",
-    "removed",
     "tableNumber",
     "capacity",
   ];

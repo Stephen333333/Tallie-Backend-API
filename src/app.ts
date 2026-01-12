@@ -44,6 +44,9 @@ export const createApp = () => {
 
   // routes
   app.use("/api/", unProtectedAppApi);
+  app.use("/health", (_, res) => {
+    res.status(200).send("OK");
+  });
   // routes
 
   app.use(notFound);

@@ -19,7 +19,7 @@ export const update = async (
   const validatedReq = pickAllowedFields<Irestaurant>(req.body, allowedFields);
 
   const result = await Model.findOneAndUpdate(
-    { id, removed: false },
+    { _id: id, removed: false },
     validatedReq,
     {
       new: true,
