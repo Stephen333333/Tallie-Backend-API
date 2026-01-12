@@ -8,12 +8,12 @@
 
 ### Prerequisites
 
-* **Node.js** (v16+ recommended)
-* **npm**
-* **MongoDB**
+- **Node.js** (v16+ recommended)
+- **npm**
+- **MongoDB**
 
-  * Local MongoDB instance **or**
-  * Hosted MongoDB connection (provided via email)
+  - Local MongoDB instance **or**
+  - Hosted MongoDB connection (provided via email)
 
 ---
 
@@ -32,10 +32,10 @@
    PORT=8100
    ```
 
-   | Variable   | Description                              |
-   | ---------- | ---------------------------------------- |
+   | Variable   | Description                                                                                    |
+   | ---------- | ---------------------------------------------------------------------------------------------- |
    | `DATABASE` | MongoDB connection string (**required**) you can use the hosted database provided in the email |
-   | `PORT`     | Server port (**required**)               |
+   | `PORT`     | Server port (**required**)                                                                     |
 
 3. **Start the development server**
 
@@ -60,8 +60,8 @@
 
 ## Server Basics
 
-* **Base API prefix:** `/api`
-* **Health check:**
+- **Base API prefix:** `/api`
+- **Health check:**
   `GET /health` → `200 OK`
 
 ### Standard JSON Response Shape
@@ -127,18 +127,18 @@ All routes are prefixed with `/api/*`
 
 #### Notes
 
-* `openingTime` / `closingTime` are **minutes from midnight** (`0–1439`)
-* Days must be **lowercase full names** (`monday`, `tuesday`, etc.)
+- `openingTime` / `closingTime` are **minutes from midnight** (`0–1439`)
+- Days must be **lowercase full names** (`monday`, `tuesday`, etc.)
 
 ---
 
 ### Other Restaurant Routes
 
-* **GET** `/api/restaurant/read/:id`
-* **PATCH** `/api/restaurant/update/:id`
-  *(Partial updates allowed)*
-* **DELETE** `/api/restaurant/delete/:id`
-  *(Soft delete: `removed = true`)*
+- **GET** `/api/restaurant/read/:id`
+- **PATCH** `/api/restaurant/update/:id`
+  _(Partial updates allowed)_
+- **DELETE** `/api/restaurant/delete/:id`
+  _(Soft delete: `removed = true`)_
 
 ---
 
@@ -158,13 +158,13 @@ All routes are prefixed with `/api/*`
 
 #### Notes
 
-* `restaurantId` must be a MongoDB ObjectId string
+- `restaurantId` must be a MongoDB ObjectId string
 
 ### Other Table Routes
 
-* **GET** `/api/table/read/:id`
-* **PATCH** `/api/table/update/:id`
-* **DELETE** `/api/table/delete/:id` *(soft delete)*
+- **GET** `/api/table/read/:id`
+- **PATCH** `/api/table/update/:id`
+- **DELETE** `/api/table/delete/:id` _(soft delete)_
 
 ---
 
@@ -189,20 +189,20 @@ All routes are prefixed with `/api/*`
 
 ### Business Rules & Validation
 
-* `startTime < endTime`
-* Reservation **must not span multiple calendar days**
-* Restaurant must be **open on the reservation day**
-* Reservation times must be within opening/closing hours
-* Table capacity ≥ `partySize`
-* Overlapping reservations (non-cancelled/completed) → **409 Conflict**
+- `startTime < endTime`
+- Reservation **must not span multiple calendar days**
+- Restaurant must be **open on the reservation day**
+- Reservation times must be within opening/closing hours
+- Table capacity ≥ `partySize`
+- Overlapping reservations (non-cancelled/completed) → **409 Conflict**
 
 ---
 
 ### Other Reservation Routes
 
-* **GET** `/api/reservation/read/:id`
+- **GET** `/api/reservation/read/:id`
 
-* **PATCH** `/api/reservation/update/:id`
+- **PATCH** `/api/reservation/update/:id`
 
   Allowed `status` values:
 
@@ -210,7 +210,7 @@ All routes are prefixed with `/api/*`
   pending | confirmed | completed | cancelled
   ```
 
-* **DELETE** `/api/reservation/delete/:id` *(soft delete)*
+- **DELETE** `/api/reservation/delete/:id` _(soft delete)_
 
 ---
 
@@ -239,9 +239,257 @@ curl -X POST http://localhost:8100/api/restaurant/create \
 
 ## Notes & Tips
 
-* MongoDB **must be running**
-* ISO date strings are accepted for all timestamps
-* All deletes are **soft deletes**
-* Payload validation happens at both **controller & model level**
+- MongoDB **must be running**
+- ISO date strings are accepted for all timestamps
+- All deletes are **soft deletes**
+- Payload validation happens at both **controller & model level**
+
+---
+
+---
+
+## Postman Collection
+
+```json
+{
+  "info": {
+    "name": "Tallie Backend API",
+    "description": "Postman collection for the Tallie Backend API (Restaurants, Tables, Reservations)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8100",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Restaurant",
+      "item": [
+        {
+          "name": "Create Restaurant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Stephen's Test Restaurant\",\n  \"address\": \"123 Victoria Island, Lagos\",\n  \"phone\": \"555-1111\",\n  \"email\": \"info@stephenstest.com\",\n  \"website\": \"https://stephenstest.example\",\n  \"openingHours\": {\n    \"monday\": {\n      \"openingTime\": 540,\n      \"closingTime\": 1320,\n      \"isClosed\": false\n    },\n    \"sunday\": {\n      \"isClosed\": true\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant", "create"]
+            }
+          }
+        },
+        {
+          "name": "Read Restaurant",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/read/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant", "read", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Restaurant",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"555-9999\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/update/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant", "update", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Restaurant",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/restaurant/delete/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "restaurant", "delete", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Table",
+      "item": [
+        {
+          "name": "Create Table",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": \"60f7a2cd9f1b2c001234abcd\",\n  \"tableNumber\": 5,\n  \"capacity\": 4\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/table/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "table", "create"]
+            }
+          }
+        },
+        {
+          "name": "Read Table",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/table/read/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "table", "read", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Table",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capacity\": 6\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/table/update/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "table", "update", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Table",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/table/delete/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "table", "delete", ":id"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservation",
+      "item": [
+        {
+          "name": "Create Reservation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"restaurantId\": \"60f7a2cd9f1b2c001234abcd\",\n  \"tableId\": \"60f7a3ef9a7b3c001234ef12\",\n  \"customerName\": \"Kemi\",\n  \"customerPhone\": \"555-2222\",\n  \"customerEmail\": \"kemi@example.com\",\n  \"partySize\": 3,\n  \"startTime\": \"2026-01-20T18:00:00.000Z\",\n  \"endTime\": \"2026-01-20T19:30:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reservation/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservation", "create"]
+            }
+          }
+        },
+        {
+          "name": "Read Reservation",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/reservation/read/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservation", "read", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Update Reservation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/reservation/update/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservation", "update", ":id"]
+            }
+          }
+        },
+        {
+          "name": "Delete Reservation",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/reservation/delete/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reservation", "delete", ":id"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
 
 ---
