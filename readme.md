@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -47,7 +47,7 @@
 
 ---
 
-### 📜 Helpful Scripts
+### Helpful Scripts
 
 | Script                 | Description                    |
 | ---------------------- | ------------------------------ |
@@ -58,7 +58,7 @@
 
 ---
 
-## 🧠 Server Basics
+## Server Basics
 
 * **Base API prefix:** `/api`
 * **Health check:**
@@ -76,7 +76,7 @@
 
 ---
 
-## 🛣️ Routes & Payloads
+## Routes & Payloads
 
 All routes are prefixed with `/api/*`
 
@@ -142,7 +142,7 @@ All routes are prefixed with `/api/*`
 
 ---
 
-## 🪑 Table
+## Table
 
 ### Create Table
 
@@ -168,7 +168,7 @@ All routes are prefixed with `/api/*`
 
 ---
 
-## 📅 Reservation
+## Reservation
 
 ### Create Reservation
 
@@ -214,7 +214,7 @@ All routes are prefixed with `/api/*`
 
 ---
 
-## 🔧 Example `curl` Request
+## Example `curl` Request
 
 ```bash
 curl -X POST http://localhost:8100/api/restaurant/create \
@@ -237,7 +237,7 @@ curl -X POST http://localhost:8100/api/restaurant/create \
 
 ---
 
-## 📝 Notes & Tips
+## Notes & Tips
 
 * MongoDB **must be running**
 * ISO date strings are accepted for all timestamps
