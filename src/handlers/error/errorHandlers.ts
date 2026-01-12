@@ -25,7 +25,7 @@ export const catchErrors = (fn: any) => {
 };
 
 export const notFound = (req: any, res: any, next: any) => {
-  console.error('api url not found for: ' + req.originalUrl + "method: " + req.method);
+  console.error('api url not found for: ' + req.originalUrl + " method: " + req.method);
   return res.status(404).json({
     success: false,
     message: "Api url doesn't exist ",

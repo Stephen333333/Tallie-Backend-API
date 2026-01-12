@@ -16,12 +16,13 @@ export const read = async (
     return res.status(404).json({
       success: false,
       result: null,
-      message: "No " + Model.modelName + " found",
+      message: "No " + Model.modelName + " found with that ID",
     });
   }
+
   return res.status(200).json({
     success: true,
     result,
-    message: "we found this " + Model.modelName + " successfully",
+    message: "we found this " + Model.modelName,
   });
 };
