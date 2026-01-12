@@ -1,46 +1,67 @@
-import mongoose, { Schema, InferSchemaType, Model } from 'mongoose';
+import mongoose, { Schema, InferSchemaType, Model } from "mongoose";
 
-const restaurantSchema = new Schema({
-  removed: {
-    type: Boolean,
-    default: false,
-    index: true,
+const restaurantSchema = new Schema(
+  {
+    removed: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    address: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    website: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    openingHours: {
+      required: true,
+      type: Map,
+      of: {
+        openingTime: {
+          type: Number,
+          min: 0,
+          max: 1439,
+          required(): boolean {
+            return !this.isClosed;
+          },
+        },
+        closingTime: {
+          type: Number,
+          min: 0,
+          max: 1439,
+          required(): boolean {
+            return !this.isClosed;
+          },
+        },
+        isClosed: { type: Boolean, default: false },
+      },
+    },
   },
-  name: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  address: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  website: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  openingHours: {
-    type: Map,
-    of: {
-      openingTime: { type: Number, required: true },
-      closingTime: { type: Number, required: true }
-    }
-  },
-}, { timestamps: true, }
+  { timestamps: true }
 );
 
-restaurantSchema.plugin(require('mongoose-autopopulate'));
+restaurantSchema.plugin(require("mongoose-autopopulate"));
 export type IRestaurant = InferSchemaType<typeof restaurantSchema>;
-export const Restaurant: Model<IRestaurant> = mongoose.model<IRestaurant>('Restaurant', restaurantSchema);
+export const Restaurant: Model<IRestaurant> = mongoose.model<IRestaurant>(
+  "Restaurant",
+  restaurantSchema
+);

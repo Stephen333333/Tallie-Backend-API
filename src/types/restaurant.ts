@@ -8,7 +8,10 @@ export type Irestaurant = {
   phone: string;
   email: string;
   website: string;
-  openingHours: Map<string, { openingTime: Number; closingTime: Number }>;
+  openingHours: Map<
+    string,
+    { openingTime: Number; closingTime: Number; isClosed: Boolean }
+  >;
   createdAt: Date;
   updatedAt: Date;
 };

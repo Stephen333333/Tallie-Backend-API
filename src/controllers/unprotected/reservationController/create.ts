@@ -1,6 +1,6 @@
 import { Response, Request } from "express";
 import { Ireservation } from "@/types";
-import { Table } from "@/models";
+import { Table, Restaurant } from "@/models";
 
 export const create = async (
   req: Request<{}, {}, Ireservation>,
@@ -20,7 +20,7 @@ export const create = async (
   } = req.body;
 
   const [restaurant, table] = await Promise.all([
-    Model.findOne({
+    Restaurant.findOne({
       _id: restaurantId,
       removed: false,
     }),
@@ -38,25 +38,39 @@ export const create = async (
   }
 
   // check if the restaurant opening time and closing time allow for the reservation
-  const dayNames = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-  ];
-
   const startDate = new Date(startTime);
   const endDate = new Date(endTime);
 
-  const reservationDay = dayNames[startDate.getDay()];
+  if (startDate >= endDate) {
+    return res.status(400).json({
+      success: false,
+      message: "End time must be after start time",
+    });
+  }
+
+  if (startDate.toDateString() !== endDate.toDateString()) {
+    return res.status(400).json({
+      success: false,
+      message: "Reservations cannot span multiple days",
+    });
+  }
+
+  const reservationDay = startDate
+    .toLocaleDateString("en-US", { weekday: "long" })
+    .toLowerCase();
 
   const openingHours = restaurant.openingHours;
-  const dayHours = openingHours[reservationDay];
 
-  if (!dayHours) {
+  if (!openingHours) {
+    return res.status(400).json({
+      success: false,
+      message: "Restaurant opening hours not configured",
+    });
+  }
+
+  const dayHours = openingHours.get(reservationDay);
+
+  if (!dayHours || dayHours.isClosed) {
     return res.status(400).json({
       success: false,
       message: `Restaurant is closed on ${reservationDay}`,
@@ -67,6 +81,13 @@ export const create = async (
   const endMinutes = endDate.getHours() * 60 + endDate.getMinutes();
 
   const { openingTime, closingTime } = dayHours;
+
+  if (openingTime == null || closingTime == null) {
+    return res.status(400).json({
+      success: false,
+      message: `Opening hours not set for ${reservationDay}`,
+    });
+  }
 
   if (startMinutes < openingTime || endMinutes > closingTime) {
     return res.status(400).json({
@@ -79,13 +100,6 @@ export const create = async (
     return res.status(400).json({
       success: false,
       message: `Table capacity of ${table.capacity} is less than party size of ${partySize}`,
-    });
-  }
-
-  if (new Date(startTime) >= new Date(endTime)) {
-    return res.status(400).json({
-      success: false,
-      message: "End time must be after start time",
     });
   }
 
