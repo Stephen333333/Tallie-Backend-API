@@ -92,7 +92,7 @@ All routes are prefixed with `/api/*`
 
 ---
 
-## 🏪 Restaurant
+## Restaurant
 
 ### Create Restaurant
 
